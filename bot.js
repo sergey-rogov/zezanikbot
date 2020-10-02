@@ -3,7 +3,7 @@ const { Telegraf } = require('telegraf');
 const MESSAGES = require('./messages');
 const { getCashFloat } = require('./cashFloat');
 
-let notificationsChatId = 88601200;
+let notificationsChatId;
 
 const failIfNotAuthorized = (adminUsername, chat) => {
   if (chat.username !== adminUsername) throw new Error('not-allowed');
