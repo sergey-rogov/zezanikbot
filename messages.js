@@ -14,7 +14,10 @@ module.exports = {
 Viel Spaß!`,
   cashFloatReport: (salespoints) => {
     if (salespoints.length === 0) return 'Пока никаких данных об остатке не получено';
-    return `${salespoints.map(
+
+    const sorted = [...salespoints].sort((a, b) => a.salespointId.localeCompare(b.salespointId));
+
+    return `${sorted.map(
       ({ salespointId, amount, reportedAt }) => `Точка продаж: ${salespointId}
 Остаток: ${amount}
 Обновлено: ${moment(reportedAt).format('dddd, MMMM Do YYYY, HH:mm:ss')}`
