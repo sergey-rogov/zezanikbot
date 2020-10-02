@@ -2,6 +2,7 @@ const startBot = require('./bot');
 const startServer = require('./server');
 const { setCashFloat } = require('./cashFloat');
 
+const port = process.env.PORT || 80;
 const botToken = process.env.BOT_TOKEN;
 const adminUsername = process.env.ADMIN_USERNAME;
 
@@ -15,7 +16,7 @@ const start = async () => {
   console.log('Bot started.')
 
   startServer({
-    port: 3000,
+    port,
     sendMessage: (message) => bot.sendMessage(message),
     onCashFloatReport: (salespointId, amount) => setCashFloat(salespointId, amount),
   });
