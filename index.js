@@ -4,15 +4,17 @@ const { setCashFloat } = require('./cashFloat');
 
 const port = process.env.PORT || 80;
 const botToken = process.env.BOT_TOKEN;
-const adminUsername = process.env.ADMIN_USERNAME;
+let adminUsernames = process.env.ADMIN_USERNAME;
 
 if (!botToken) throw new Error('Bot token is not specified');
-if (!adminUsername) throw new Error('Admin username is not specified');
+if (!adminUsernames) throw new Error('Admin username is not specified');
+
+admingUsernames = adminUsernames.split(',').map(username => username.trim());
 
 const start = async () => {
   console.log('Starting...');
 
-  const bot = await startBot(botToken, adminUsername);
+  const bot = await startBot(botToken, admingUsernames);
   console.log('Bot started.')
 
   startServer({

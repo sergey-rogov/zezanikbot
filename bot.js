@@ -3,19 +3,19 @@ const { Telegraf } = require('telegraf');
 const MESSAGES = require('./messages');
 const { getCashFloat } = require('./cashFloat');
 
-let notificationsChatId;
+const notificationsChatIds = new Set();
 
 const failIfNotAuthorized = (adminUsername, chat) => {
-  if (chat.username !== adminUsername) throw new Error('not-allowed');
+  if (!admingUsernames.includes(chat.username)) throw new Error('not-allowed');
 };
 const useChatForNotifications = (chat) => {
-  notificationsChatId = chat.id;
+  notificationsChatIds.add(chat.id);
 };
 
-const withAuthorization = (adminUsername) => (handler) => async (ctx) => {
+const withAuthorization = (admingUsernames) => (handler) => async (ctx) => {
   try {
     const chat = await ctx.getChat();
-    failIfNotAuthorized(adminUsername, chat);
+    failIfNotAuthorized(admingUsernames, chat);
 
     handler(ctx, chat);
   } catch (e) {
@@ -38,9 +38,9 @@ const reportCashFloat = (ctx) => {
   ctx.reply(MESSAGES.cashFloatReport(cashFloat));
 };
 
-const start = async (botToken, adminUsername) => {
+const start = async (botToken, admingUsernames) => {
   const bot = new Telegraf(botToken);
-  const authorized = withAuthorization(adminUsername);
+  const authorized = withAuthorization(admingUsernames);
 
   bot.command('start', authorized(greet));
   bot.command('cashFloat', authorized(reportCashFloat));
@@ -49,7 +49,18 @@ const start = async (botToken, adminUsername) => {
   bot.launch();
 
   return {
-    sendMessage: (message) => bot.telegram.sendMessage(notificationsChatId, message),
+    sendMessage: async (message) => {
+      const chatIds = [...notificationsChatIds.values()];
+      for (const chatId of chatIds) {
+        try {
+          await bot.telegram.sendMessage(chatId, message);
+        } catch (e) {
+          console.log('An error arose while sending a message. Chat id will be deleted');
+          console.error(e);
+          notificationsChatIds.delete(chatId);
+        }
+      }
+    },
   };
 };
 
