@@ -47,6 +47,8 @@ const start = async (botToken, adminUsername) => {
   bot.command('cashFloat', authorized(reportCashFloat));
   bot.command('help', ctx => ctx.reply('No one will help one here'));
 
+  bot.launch();
+
   return {
     sendMessage: (message) => bot.telegram.sendMessage(notificationsChatId, message),
   };
