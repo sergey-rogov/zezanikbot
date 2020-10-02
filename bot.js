@@ -8,8 +8,7 @@ let notificationsChatId;
 const failIfNotAuthorized = (adminUsername, chat) => {
   if (chat.username !== adminUsername) throw new Error('not-allowed');
 };
-const authorize = (adminUsername, chat) => {
-  failIfNotAuthorized(adminUsername, chat);
+const useChatForNotifications = (chat) => {
   notificationsChatId = chat.id;
 };
 
@@ -30,7 +29,7 @@ const withAuthorization = (adminUsername) => (handler) => async (ctx) => {
 };
 
 const greet = (ctx, chat) => {
-  authorize(adminUsername, chat);
+  useChatForNotifications(chat);
   ctx.reply(MESSAGES.help(chat));
 };
 
