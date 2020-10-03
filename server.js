@@ -4,6 +4,7 @@ const app = express();
 
 const start = ({
   port,
+  authToken,
   sendMessage,
   onCashFloatReport,
 }) => {
@@ -15,6 +16,12 @@ const start = ({
   });
 
   app.post('/api/message', (req, res) => {
+    if (req.headers.authorization !== authToken) {
+      res.statusCode = 401;
+      res.send('Unauthorized');
+      return;
+    }
+
     const text = req.body;
 
     console.log('Sending message:', text);
@@ -24,6 +31,12 @@ const start = ({
   });
 
   app.post('/api/salespoints/:id/cash-float/:amount', (req, res) => {
+    if (req.headers.authorization !== authToken) {
+      res.statusCode = 401;
+      res.send('Unauthorized');
+      return;
+    }
+
     let { id, amount } = req.params;
 
     if (amount.length === 0) {

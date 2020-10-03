@@ -4,6 +4,7 @@ const { setCashFloat } = require('./cashFloat');
 
 const port = process.env.PORT || 80;
 const botToken = process.env.BOT_TOKEN;
+const apiAuthToken = process.env.API_AUTH_TOKEN;
 let adminUsernames = process.env.ADMIN_USERNAME;
 
 if (!botToken) throw new Error('Bot token is not specified');
@@ -19,6 +20,7 @@ const start = async () => {
 
   startServer({
     port,
+    authToken: apiAuthToken,
     sendMessage: (message) => bot.sendMessage(message),
     onCashFloatReport: (salespointId, amount) => setCashFloat(salespointId, amount),
   });
