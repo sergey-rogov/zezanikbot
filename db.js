@@ -1,14 +1,9 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-const host = process.env.DB_HOST;
-const database = process.env.DB_NAME;
-const username = process.env.DB_USERNAME;
-const password = process.env.DB_PASSWORD;
+const dbURL = process.env.DATABASE_URL;
+if (!dbURL) throw new Error('DB connection url is not defined');
 
-const sequelize = new Sequelize(database, username, password, {
-  host,
-  dialect: 'postgres',
-});
+const sequelize = new Sequelize(dbURL);
 
 sequelize.sync().then(() => console.log('DB in sync'));
 
