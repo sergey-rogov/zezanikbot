@@ -2,6 +2,19 @@ const express = require('express');
 const app = express();
 
 
+const authorized = (validToken, req) => {
+  const actualToken = req.headers.authorization || req.query.auth;
+  const isAuthorized = actualToken === validToken;
+
+  if (!isAuthorized) {
+    res.statusCode = 401;
+    res.send('Unauthorized');
+  }
+
+  return isAuthorized;
+};
+
+
 const start = ({
   port,
   authToken,
@@ -16,11 +29,7 @@ const start = ({
   });
 
   app.post('/api/message', (req, res) => {
-    if (req.headers.authorization !== authToken && req.query.auth !== authToken) {
-      res.statusCode = 401;
-      res.send('Unauthorized');
-      return;
-    }
+    if (!authorized(authToken, req)) return;
 
     const text = req.body;
 
@@ -31,11 +40,7 @@ const start = ({
   });
 
   app.post('/api/salespoints/:id/cash-float/:amount', async (req, res) => {
-    if (req.headers.authorization !== authToken && req.query.auth !== authToken) {
-      res.statusCode = 401;
-      res.send('Unauthorized');
-      return;
-    }
+    if (!authorized(authToken, req)) return;
 
     let { id, amount } = req.params;
 

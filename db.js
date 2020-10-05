@@ -12,6 +12,22 @@ const sequelize = new Sequelize(database, username, password, {
 
 sequelize.sync().then(() => console.log('DB in sync'));
 
+const User = sequelize.define('User', {
+  username: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  chatId: {
+    type: DataTypes.INTEGER,
+  },
+  subscribed: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+  },
+}, {
+  timestamps: true,
+});
+
 const CashFloat = sequelize.define('CashFloat', {
   salespointId: {
     type: DataTypes.STRING,
@@ -25,4 +41,4 @@ const CashFloat = sequelize.define('CashFloat', {
   timestamps: true,
 });
 
-module.exports = { CashFloat };
+module.exports = { User, CashFloat };
