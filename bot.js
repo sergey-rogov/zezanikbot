@@ -33,8 +33,8 @@ const greet = (ctx, chat) => {
   ctx.reply(MESSAGES.help(chat));
 };
 
-const reportCashFloat = (ctx) => {
-  const cashFloat = getCashFloat();
+const reportCashFloat = async (ctx) => {
+  const cashFloat = await getCashFloat();
   ctx.reply(MESSAGES.cashFloatReport(cashFloat));
 };
 

@@ -1,35 +1,29 @@
-const MAX_LIVE_DURATION = 1000 * 60 * 60 * 24 * 31;
+const { CashFloat } = require('./db');
 
-const data = new Map();
 
-const clearCashFloat = (salespointId) => {
-  data.delete(salespointId);
-};
-
-const clearOutdated = () => {
-  Array.from(data.keys()).forEach(salespointId => {
-    const { reportedAt } = data.get(salespointId);
-
-    if (Date.now() - MAX_LIVE_DURATION > reportedAt.getTime()) {
-      clearCashFloat(salespointId);
+const setCashFloat = async (salespointId, amount) => {
+  try {
+    const prev = await CashFloat.findOne({ where: { salespointId } });
+    if (prev) {
+      prev.setDataValue('amount', amount);
+      await prev.save();
+    } else {
+      await CashFloat.create({ salespointId, amount });
     }
-  });
+  } catch (e) {
+    console.error(e);
+    throw new Error('Can\'t save to db');
+  }
 };
 
-const setCashFloat = (salespointId, amount) => {
-  const reportedAt = new Date();
-  data.set(salespointId, { amount, reportedAt });
-
-  clearOutdated();
-};
-
-const getCashFloat = () => {
+const getCashFloat = async () => {
+  const rows = await CashFloat.findAll();
   const report = [];
-  for (const [salespointId, { amount, reportedAt }] of data.entries()) {
+  for (const row of rows) {
     report.push({
-      salespointId,
-      amount,
-      reportedAt,
+      salespointId: row.salespointId,
+      amount: row.amount,
+      reportedAt: row.updatedAt,
     });
   }
   return report;

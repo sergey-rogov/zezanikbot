@@ -30,7 +30,7 @@ const start = ({
     res.send('Message sent');
   });
 
-  app.post('/api/salespoints/:id/cash-float/:amount', (req, res) => {
+  app.post('/api/salespoints/:id/cash-float/:amount', async (req, res) => {
     if (req.headers.authorization !== authToken && req.query.auth !== authToken) {
       res.statusCode = 401;
       res.send('Unauthorized');
@@ -51,9 +51,14 @@ const start = ({
     }
 
     console.log(`Cash float was reported for salespoint ${id}`);
-    onCashFloatReport(id, amount);
 
-    res.send('Cash float received');
+    try {
+      await onCashFloatReport(id, amount);
+      res.send('Cash float received');
+    } catch (e) {
+      res.statusCode = 500;
+      res.send('Server error');
+    }
   });
 
   app.listen(port, () => {
