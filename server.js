@@ -16,7 +16,7 @@ const start = ({
   });
 
   app.post('/api/message', (req, res) => {
-    if (req.headers.authorization !== authToken) {
+    if (req.headers.authorization !== authToken && req.query.auth !== authToken) {
       res.statusCode = 401;
       res.send('Unauthorized');
       return;
@@ -31,7 +31,7 @@ const start = ({
   });
 
   app.post('/api/salespoints/:id/cash-float/:amount', (req, res) => {
-    if (req.headers.authorization !== authToken) {
+    if (req.headers.authorization !== authToken && req.query.auth !== authToken) {
       res.statusCode = 401;
       res.send('Unauthorized');
       return;
