@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 
-const authorized = (validToken, req) => {
+const authorized = (validToken, req, res) => {
   const actualToken = req.headers.authorization || req.query.auth;
   const isAuthorized = actualToken === validToken;
 
@@ -29,7 +29,7 @@ const start = ({
   });
 
   app.post('/api/message', (req, res) => {
-    if (!authorized(authToken, req)) return;
+    if (!authorized(authToken, req, res)) return;
 
     const text = req.body;
 
@@ -40,7 +40,7 @@ const start = ({
   });
 
   app.post('/api/salespoints/:id/cash-float/:amount', async (req, res) => {
-    if (!authorized(authToken, req)) return;
+    if (!authorized(authToken, req, res)) return;
 
     let { id, amount } = req.params;
 
