@@ -31,6 +31,8 @@ const start = ({
   app.post('/api/message', (req, res) => {
     if (!authorized(authToken, req, res)) return;
 
+    console.log(req);
+
     const text = req.body;
 
     console.log('Sending message:', text);
