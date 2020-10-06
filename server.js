@@ -33,7 +33,7 @@ const start = ({
 
     console.log(req);
 
-    const text = req.body;
+    const text = req.query.text || req.body;
 
     console.log('Sending message:', text);
     sendMessage(text);
