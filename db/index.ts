@@ -1,4 +1,4 @@
-import User from './user';
 import CashFloat from './cashFloat';
+import Chat from './chat';
 
-export { User, CashFloat };
+export { Chat, CashFloat };

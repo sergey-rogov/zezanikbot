@@ -4,18 +4,20 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from './instance';
 
 
-interface UserAttributes {
+interface ChatAttributes {
   id: number;
-  username: string;
+  userUsername: string;
+  botUsername: string;
   chatId: number | null;
   subscribed?: boolean;
 };
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface ChatCreationAttributes extends Optional<ChatAttributes, 'id'> {}
 
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+class Chat extends Model<ChatAttributes, ChatCreationAttributes> implements ChatAttributes {
   public id!: number;
-  public username!: string;
+  public userUsername!: string;
+  public botUsername!: string;
   public chatId!: number | null;
   public subscribed!: boolean;
 
@@ -23,13 +25,17 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   public readonly updatedAt!: Date;
 }
 
-User.init({
+Chat.init({
   id: {
     type: DataTypes.INTEGER.UNSIGNED,
     autoIncrement: true,
     primaryKey: true,
   },
-  username: {
+  userUsername: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  botUsername: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -43,7 +49,7 @@ User.init({
 }, {
   sequelize,
   timestamps: true,
-  tableName: 'Users',
+  tableName: 'Chats',
 });
 
-export default User;
+export default Chat;

@@ -1,29 +1,29 @@
-import startBot from './bot';
 import startServer from './server';
 import { setCashFloat } from './cashFloat';
 
 import config from './config';
+import startBots from './bots';
 
-const port = config.PORT;
-const botToken = config.BOT_TOKEN;
-const apiAuthToken = config.API_AUTH_TOKEN;
-const adminUsername = config.ADMIN_USERNAME;
-
-if (!botToken) throw new Error('Bot token is not specified');
-if (!adminUsername) throw new Error('Admin username is not specified');
-
-const adminUsernames = adminUsername.split(',').map(username => username.trim());
+const configs = config.BOT_TOKENS.map((token) => ({
+  token,
+  adminUsernames: config.ADMIN_USERNAMES,
+}))
 
 const start = async () => {
   console.log('Starting...');
 
-  const bot = await startBot(botToken, adminUsernames);
+  const bots = await startBots(configs);
   console.log('Bot started.')
 
   startServer({
-    port,
-    authToken: apiAuthToken,
-    sendMessage: (message) => bot.sendMessage(message),
+    port: config.PORT,
+    authTokens: config.API_AUTH_TOKENS,
+    sendMessage: (authToken, message) => {
+      const botIndex = config.API_AUTH_TOKENS.indexOf(authToken);
+      if (botIndex === -1) throw new Error(`No bot found for auth token "${authToken}"`);
+      const botToken = config.BOT_TOKENS[botIndex];
+      bots.sendMessage(botToken, message)
+    },
     onCashFloatReport: (salespointId, amount) => setCashFloat(salespointId, amount),
   });
   console.log('Server started.');

@@ -2,20 +2,36 @@ import { config } from 'dotenv';
 
 interface Config {
   PORT: number;
-  BOT_TOKEN: string;
-  API_AUTH_TOKEN: string;
-  ADMIN_USERNAME: string;
+  BOT_TOKENS: string[];
+  API_AUTH_TOKENS: string[];
+  ADMIN_USERNAMES: string[];
   DATABASE_URL: string;
 }
 
-const c: Config = <Config> <unknown> config().parsed;
+const parsed = config().parsed;
 
-c.PORT = Number(c.PORT);
+[
+  'PORT',
+  'BOT_TOKENS',
+  'API_AUTH_TOKENS',
+  'ADMIN_USERNAMES',
+  'DATABASE_URL',
+].forEach(key => {
+  if (typeof parsed[key] !== 'string' || parsed[key].length === 0) throw new Error(`"${key}" is not defined`);
+});
 
-if (typeof c.PORT !== 'number') throw new Error('PORT is not a number');
-if (typeof c.BOT_TOKEN !== 'string') throw new Error('BOT_TOKEN is not a string');
-if (typeof c.API_AUTH_TOKEN !== 'string') throw new Error('API_AUTH_TOKEN is not a string');
-if (typeof c.ADMIN_USERNAME !== 'string') throw new Error('ADMIN_USERNAME is not a string');
-if (typeof c.DATABASE_URL !== 'string') throw new Error('DATABASE_URL is not a string');
+const c: Config = {
+  PORT: Number(parsed.PORT),
+  BOT_TOKENS: parsed.BOT_TOKENS.split(','),
+  API_AUTH_TOKENS: parsed.API_AUTH_TOKENS.split(','),
+  ADMIN_USERNAMES: parsed.ADMIN_USERNAMES.split(','),
+  DATABASE_URL: parsed.DATABASE_URL,
+};
+
+if (Number.isNaN(c.PORT)) throw new Error(`"PORT" "${parsed.PORT}" is not a number`);
+if (c.BOT_TOKENS.some(token => token.length === 0)) throw new Error(`Some of "BOT_TOKENS" are empty`);
+if (c.API_AUTH_TOKENS.some(token => token.length === 0)) throw new Error(`Some of "API_AUTH_TOKENS" are empty`);
+if (c.BOT_TOKENS.length !== c.API_AUTH_TOKENS.length) throw new Error(`"BOT_TOKENS" has ${c.BOT_TOKENS.length} elements whereas "API_AUTH_TOKENS" has ${c.API_AUTH_TOKENS.length}. They should have equal length`);
+if (c.ADMIN_USERNAMES.some(token => token.length === 0)) throw new Error(`Some of "ADMIN_USERNAMES" are empty`);
 
 export default c;

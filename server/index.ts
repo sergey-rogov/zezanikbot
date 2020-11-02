@@ -10,21 +10,21 @@ const app = express();
 
 const start = ({
   port,
-  authToken,
+  authTokens,
   sendMessage,
   onCashFloatReport,
 }: {
   port: number;
-  authToken: string;
-  sendMessage: (message: string) => void;
+  authTokens: string[];
+  sendMessage: (token: string, message: string) => void;
   onCashFloatReport: (id: string, amount: string) => Promise<void>;
 }) => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.text());
 
   app.get('/', createIndexRoute());
-  app.post('/api/message', withAuth(authToken, createMessageRoute(sendMessage)));
-  app.post('/api/salespoints/:id/cash-float/:amount', withAuth(authToken, createCashFloatRoute(onCashFloatReport)));
+  app.post('/api/message', withAuth(authTokens, createMessageRoute(sendMessage)));
+  app.post('/api/salespoints/:id/cash-float/:amount', withAuth(authTokens, createCashFloatRoute(onCashFloatReport)));
 
   app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);

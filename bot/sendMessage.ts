@@ -3,11 +3,12 @@ import type { TelegrafContext } from 'telegraf/typings/context';
 
 import { Op } from 'sequelize';
 
-import { User } from '../db';
+import { Chat } from '../db';
 
 const createSendMessageMethod = (bot: Telegraf<TelegrafContext>) => async (message: string) => {
-  const subscribers = await User.findAll({
+  const subscribers = await Chat.findAll({
     where: {
+      botUsername: bot.context.botInfo.username,
       subscribed: true,
       chatId: {
         [Op.ne]: null,

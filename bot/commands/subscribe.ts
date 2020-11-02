@@ -1,19 +1,20 @@
 import type { TelegrafContext } from 'telegraf/typings/context';
-import type { Chat } from 'telegraf/typings/telegram-types';
+import type { Chat as TelegramChat } from 'telegraf/typings/telegram-types';
 
 import MESSAGES from '../../messages';
-import { User } from '../../db';
+import { Chat } from '../../db';
 
-const createSubscribeCommand = () => async (ctx: TelegrafContext, chat: Chat) => {
-  const { username, id: chatId } = chat;
+const createSubscribeCommand = () => async (ctx: TelegrafContext, chat: TelegramChat) => {
+  const botUsername = ctx.botInfo.username;
+  const userUsername = chat.username;
 
   try {
-    await User.update({
+    await Chat.update({
       subscribed: true,
     }, {
       where: {
-        username,
-        chatId,
+        userUsername,
+        botUsername,
       },
     });
     ctx.reply(MESSAGES.subscribed);

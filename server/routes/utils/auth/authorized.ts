@@ -12,9 +12,11 @@ export interface AuthorizedResponse {
   send: (response: string) => void;
 };
 
-const authorized = (validToken: string, req: AuthorizedRequest, res: AuthorizedResponse) => {
-  const actualToken = req.headers.authorization || req.query.auth;
-  const isAuthorized = actualToken === validToken;
+export const getToken = (req: AuthorizedRequest) => req.headers.authorization || req.query.auth;
+
+const authorized = (validTokens: string[], req: AuthorizedRequest, res: AuthorizedResponse) => {
+  const actualToken = getToken(req);
+  const isAuthorized = validTokens.includes(actualToken);
 
   if (!isAuthorized) {
     res.statusCode = 401;
