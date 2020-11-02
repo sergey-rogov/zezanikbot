@@ -1,11 +1,17 @@
-const moment = require('moment');
-require('moment-timezone');
+import moment from 'moment';
+import 'moment-timezone';
 
 moment.locale('ru');
 moment.tz.setDefault('Europe/Moscow');
 
 const MESSAGES = {
-  start: ({ first_name, last_name }) => `Привет ${last_name} ${first_name}!
+  start: ({
+    first_name,
+    last_name,
+  }: {
+    first_name?: string,
+    last_name?: string,
+  }) => `Привет ${last_name} ${first_name}!
 
 Теперь в этот чат я буду присылать все уведомления.
 
@@ -36,4 +42,4 @@ Viel Spaß!`,
   unsubscribed: 'Отписались. Подписаться обратно /subscribe',
 };
 
-module.exports = MESSAGES;
+export default MESSAGES;
