@@ -1,3 +1,5 @@
+const iconv = require('iconv-lite');
+
 const express = require('express');
 const app = express();
 
@@ -12,6 +14,25 @@ const authorized = (validToken, req, res) => {
   }
 
   return isAuthorized;
+};
+
+const containsCyrillic = (input) => /[А-я]/i.test(input);
+
+const fixCharset = (input) => {
+  if (!containsCyrillic(input)) {
+    console.log('Fixing charset...');
+    const buf = iconv.encode(input, 'win1252');
+    const output = iconv.decode(buf, 'utf8');
+
+    if (containsCyrillic(output)) {
+      console.log('Charset fixed');
+      return output;
+    }
+    console.log('Charset not fixed');
+  } else {
+    console.log('No cyrillic characters found');
+  }
+  return input;
 };
 
 
@@ -31,9 +52,8 @@ const start = ({
   app.post('/api/message', (req, res) => {
     if (!authorized(authToken, req, res)) return;
 
-    console.log(req);
-
-    const text = req.query.text || req.body;
+    let text = req.query.text || req.body;
+    text = fixCharset(text);
 
     console.log('Sending message:', text);
     sendMessage(text);
