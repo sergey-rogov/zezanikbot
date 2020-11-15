@@ -32,8 +32,11 @@ const createMessageRoute = (sendMessage: (token: string, message: string) => voi
   req: MessageRequest & AuthorizedRequest,
   res: MessageResponse,
 ) => {
-  const token = getToken(req);
+  // const token = getToken(req);
+  const token = '';
+  console.log(req.headers);
   let text = req.query.text || req.body;
+  console.log('text received:', text);
 
   text = fixCharset(text);
 

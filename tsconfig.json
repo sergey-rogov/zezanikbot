@@ -1,7 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "esModuleInterop": true,
     "moduleResolution": "node",
-  }
+    "outDir": "dist",
+  },
+  "exclude": [
+    "**/__tests__",
+    "node_modules",
+  ],
 }

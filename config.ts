@@ -1,4 +1,4 @@
-import { config } from 'dotenv';
+// import { config } from 'dotenv';
 
 interface Config {
   PORT: number;
@@ -8,7 +8,8 @@ interface Config {
   DATABASE_URL: string;
 }
 
-const parsed = config().parsed;
+// const parsed = config().parsed;
+const parsed = process.env;
 
 [
   'PORT',

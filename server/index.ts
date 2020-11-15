@@ -23,7 +23,8 @@ const start = ({
   app.use(express.text());
 
   app.get('/', createIndexRoute());
-  app.post('/api/message', withAuth(authTokens, createMessageRoute(sendMessage)));
+  // app.post('/api/message', withAuth(authTokens, createMessageRoute(sendMessage)));
+  app.post('/api/message', createMessageRoute(sendMessage));
   app.post('/api/salespoints/:id/cash-float/:amount', withAuth(authTokens, createCashFloatRoute(onCashFloatReport)));
 
   app.listen(port, () => {
