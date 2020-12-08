@@ -8,6 +8,12 @@ const authorized = (validToken, req, res) => {
   const actualToken = req.headers.authorization || req.query.auth;
   const isAuthorized = actualToken === validToken;
 
+  console.log({
+    actualToken,
+    validToken,
+    isTokenValid: isAuthorized,
+  });
+
   if (!isAuthorized) {
     res.statusCode = 401;
     res.send('Unauthorized');
