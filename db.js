@@ -3,7 +3,12 @@ const { Sequelize, DataTypes } = require('sequelize');
 const dbURL = process.env.DATABASE_URL;
 if (!dbURL) throw new Error('DB connection url is not defined');
 
-const sequelize = new Sequelize(dbURL);
+const sequelize = new Sequelize(`${dbURL}`, {
+  dialect: 'postgres',
+  dialectOptions: {
+    rejectUnauthorized: false,
+  },
+});
 
 sequelize.sync().then(() => console.log('DB in sync'));
 
